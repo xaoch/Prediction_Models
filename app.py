@@ -128,7 +128,7 @@ body = dbc.Container(
                         dcc.Dropdown(
                            id='model',
                            options=[{'label': 'Cluster', 'value': 1},{'label': 'Random Forest', 'value': 2}],
-                           value=opt_st[0]['value'],
+                           value=1,
                            ),
                        
                     ],
