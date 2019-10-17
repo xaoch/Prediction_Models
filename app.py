@@ -26,34 +26,17 @@ app = dash.Dash(
 )
 
 server = app.server
+app.config.suppress_callback_exceptions = False
 
 students = pd.read_csv("students.csv")
 semesters = pd.read_csv("semesters.csv")
+students_train = pd.read_csv("students_train.csv")
+semesters_train = pd.read_csv("semesters_train.csv")
 
-semesters_train=semesters[semesters['year'] < 2012]
-semesters_train=semesters[semesters['year'] < 2012]
+
 semesters_test=semesters[semesters['year'] > 2011]
-
-students_train=students[students['student_id'].isin(semesters_train['student_id'].tolist())]
 students_test=students[students['student_id'].isin(semesters_test['student_id'].tolist())]
 
-students_test_ids=students_test['student_id'].tolist()
-
-semesters_test=semesters_test[semesters_test['student_id'].isin(students_test_ids)]
-
-vector_students=students_train[['factor1', 'factor2','factor3','factor4','factor5','gpa']]
-k_clusters = 5
-
-clus_students = cluster.KMeans(n_clusters=k_clusters, n_init=200)
-clus_students.fit(vector_students)
-students_train["cluster"]=clus_students.labels_
-
-vector_semesters=semesters_train[['order', 'beta_total','num_classes']]
-k_clusters = 8
-
-clus_semesters = cluster.KMeans(n_clusters=k_clusters, n_init=200)
-clus_semesters.fit(vector_semesters)
-semesters_train["cluster"]=clus_semesters.labels_
 
 def get_student_data(student_id):
     student_data=students_test[students_test['student_id']==student_id]
@@ -260,4 +243,4 @@ def update_plots(student_value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server()
+    app.run_server(debug=True)
