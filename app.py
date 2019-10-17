@@ -35,6 +35,7 @@ students_train = pd.read_csv("students_train.csv")
 semesters_train = pd.read_csv("semesters_train.csv")
 clus_students = pickle.load(open("student_model.sav", 'rb'))
 clus_semesters = pickle.load(open("semester_model.sav", 'rb'))
+rf_model=pickle.load(open("rf_model.sav",'rb'))
 
 semesters_test=semesters[semesters['year'] > 2011]
 students_test=students[students['student_id'].isin(semesters_test['student_id'].tolist())]
@@ -77,7 +78,15 @@ def get_new_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,ord
     risk=failed_cases/total_cases
     return risk,total_cases
 
-
+def get_forest_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order, beta_total,num_classes):
+    df = pd.DataFrame([[factor1,factor2,factor3,factor4,factor5,gpa,order, beta_total,num_classes]], columns=['factor1','factor2','factor3','factor4','factor5','gpa','order','beta_total','num_classes'])
+    prediction=model.predict(df)[0]
+    risk=0
+    if (prediction):
+        risk=1
+    certainty=0.7355
+    return risk,certainty
+    
 opt_st=[]
 for student in students_test['student_id'].values:
     opt_st.append({'label': student, 'value': student})
@@ -112,6 +121,13 @@ body = dbc.Container(
                         dcc.Dropdown(
                            id='student',
                            options=opt_st,
+                           value=opt_st[0]['value'],
+                           ),
+                        html.Br(),
+                        html.H2("Select Model"),
+                        dcc.Dropdown(
+                           id='model',
+                           options=[{'label': 'Cluster', 'value': 1},{'label': 'Random Forest', 'value': 2}],
                            value=opt_st[0]['value'],
                            ),
                        
@@ -201,13 +217,18 @@ app.layout = html.Div(children=[navbar,body]
      Output("classes", "value"),
      Output("risk-gauge", "value"),
      Output("certainty-gauge", "value")],
-    [Input("student", "value")],
+    [Input("student", "value"),
+     Input("model", "value")],
 )
-def update_plots(student_value):
+def update_plots(student_value,model_value):
     factor1,factor2,factor3,factor4,factor5,gpa=get_student_data(student_value)
     order,beta_total,num_classes=get_semester_data(student_value)
-    risk,certainty=get_new_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order,beta_total,num_classes)
     
+    if(model==1):
+        risk,certainty=get_new_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order,beta_total,num_classes)
+    else:
+        risk,certainty=get_forest_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order,beta_total,num_classes)
+        
     data_semester = [
         {
             "x": ['Factor 1','Factor 2', 'Factor 3', 'Factor 4', 'Factor 5', 'GPA'],
