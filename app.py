@@ -19,6 +19,7 @@ from sklearn import cluster
 from sklearn.metrics import brier_score_loss
 from sklearn.calibration import calibration_curve
 import matplotlib.pyplot as plt
+import pickle
 
 app = dash.Dash(
     __name__,
@@ -32,7 +33,8 @@ students = pd.read_csv("students.csv")
 semesters = pd.read_csv("semesters.csv")
 students_train = pd.read_csv("students_train.csv")
 semesters_train = pd.read_csv("semesters_train.csv")
-
+clus_students = pickle.load(open("student_model.sav", 'rb'))
+clus_semesters = pickle.load(open("semester_model.sav", 'rb'))
 
 semesters_test=semesters[semesters['year'] > 2011]
 students_test=students[students['student_id'].isin(semesters_test['student_id'].tolist())]
