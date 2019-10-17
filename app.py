@@ -224,7 +224,7 @@ def update_plots(student_value,model_value):
     factor1,factor2,factor3,factor4,factor5,gpa=get_student_data(student_value)
     order,beta_total,num_classes=get_semester_data(student_value)
     
-    if(model==1):
+    if(model_value==1):
         risk,certainty=get_new_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order,beta_total,num_classes)
     else:
         risk,certainty=get_forest_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order,beta_total,num_classes)
