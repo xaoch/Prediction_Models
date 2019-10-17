@@ -26,7 +26,6 @@ app = dash.Dash(
 )
 
 server = app.server
-app.config.suppress_callback_exceptions = False
 
 students = pd.read_csv("students.csv")
 semesters = pd.read_csv("semesters.csv")
@@ -261,4 +260,4 @@ def update_plots(student_value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server()
