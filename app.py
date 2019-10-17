@@ -80,7 +80,7 @@ def get_new_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,ord
 
 def get_forest_risk_and_uncertainty(factor1,factor2,factor3,factor4,factor5,gpa,order, beta_total,num_classes):
     df = pd.DataFrame([[factor1,factor2,factor3,factor4,factor5,gpa,order, beta_total,num_classes]], columns=['factor1','factor2','factor3','factor4','factor5','gpa','order','beta_total','num_classes'])
-    prediction=model.predict(df)[0]
+    prediction=rf_model.predict(df)[0]
     risk=0
     if (prediction):
         risk=1
